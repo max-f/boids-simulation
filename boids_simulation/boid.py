@@ -23,6 +23,23 @@ class Boid:
         self.diffs = diffs
         self.history = []
 
+    def restrain(self, window_size):
+        """ Keep boids within the window """
+        width, height = window_size
+        turn_factor = 1
+        margin = 200
+
+        if self.position[0] < margin:
+            self.diffs[0] += turn_factor
+        if self.position[0] > width - margin:
+            self.diffs[0] -= turn_factor
+        if self.position[1] < margin:
+            self.diffs[1] += turn_factor
+        if self.position[1] > height - margin:
+            self.diffs[1] -= turn_factor
+
+        print(f'Helloy: {width}x{height}')
+
     def find_nearby_boids(self, all_boids: list["Boid"]) -> Generator["Boid", None, None]:
         for boid in all_boids:
             if boid != self and self.position.distance(boid.position) < BOID_RANGE:
@@ -60,14 +77,16 @@ class Boid:
         move_diff *= avoid_factor
         self.diffs += move_diff
 
-    def update(self, all_boids: list["Boid"]) -> None:
+    def update(self, all_boids: list["Boid"], window_size: tuple[int, int]) -> None:
         # TODO: Implement
         self.fly_towards_center(all_boids)
         self.avoid_collisions(all_boids)
+        self.restrain(window_size)
 
         for i in range(len(self.position)):
             self.position[i] += self.diffs[i]
-            print(self.position)
+
+        print(self.position)
 
     @staticmethod
     def render_boid():

@@ -56,7 +56,7 @@ def run():
 
     def update(dt):
         for boid in boids:
-            boid.update(boids)
+            boid.update(boids, window.get_size())
 
     # schedule world updates as often as possible
     #pyglet.clock.schedule(update)
